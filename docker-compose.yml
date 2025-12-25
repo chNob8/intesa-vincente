@@ -1,0 +1,8 @@
+version: '3'
+services:
+  intesa-vincente:
+    build: .             # Dice a Portainer di costruire usando il Dockerfile nella stessa cartella
+    container_name: intesa-vincente
+    restart: always
+    ports:
+      - "8080:80"        # La porta: raggiungerai il sito su http://tuo-ip:8080
