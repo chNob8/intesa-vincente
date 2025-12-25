@@ -10,26 +10,23 @@
         body {
             margin: 0;
             padding: 0;
-            /* Sfondo verde per eventuale Chroma Key (OBS) o nero */
             background-color: #000; 
             height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-end; /* Posiziona la barra in basso */
+            align-items: flex-end; 
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
         }
 
-        /* Contenitore principale della barra */
         .game-bar {
             margin-bottom: 50px;
             display: flex;
             align-items: center;
             gap: 15px;
-            transform: scale(1.2); /* Rende tutto un po' più grande */
+            transform: scale(1.2); 
         }
 
-        /* Stile comune per le caselle blu */
         .box {
             background: linear-gradient(180deg, #2ebfec 0%, #007cc2 50%, #005a9e 100%);
             border-radius: 20px;
@@ -42,7 +39,6 @@
             position: relative;
         }
 
-        /* Effetto lucido (riflesso) nella parte superiore */
         .box::after {
             content: '';
             position: absolute;
@@ -54,7 +50,6 @@
             border-radius: 15px 15px 50% 50% / 15px 15px 10px 10px;
         }
 
-        /* Contatore Punti (Sinistra) */
         .score-box {
             width: 100px;
             height: 80px;
@@ -65,7 +60,6 @@
             border-bottom-left-radius: 40px;
         }
 
-        /* Parola Centrale */
         .word-box {
             width: 600px;
             height: 100px;
@@ -74,10 +68,9 @@
             text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
             text-transform: uppercase;
             letter-spacing: 2px;
-            z-index: 10; /* Per stare leggermente sopra se necessario */
+            z-index: 10; 
         }
 
-        /* Timer (Destra) */
         .timer-box {
             width: 120px;
             height: 80px;
@@ -88,7 +81,6 @@
             border-bottom-right-radius: 40px;
         }
 
-        /* Istruzioni nascoste per l'operatore */
         .controls-hint {
             position: absolute;
             top: 10px;
@@ -110,149 +102,38 @@
 <body>
 
     <div class="controls-hint">
-        <b>COMANDI TASTIERA:</b><br>
-        SPAZIO: Start/Pausa Timer<br>
-        INVIO: Parola Indovinata (+1 Punto)<br>
-        BACKSPACE/ESC: Passo (Nuova parola)<br>
-        FRECCIA SU/GIÙ: Correggi Punteggio<br>
-        R: Reset Gioco<br>
-        H: Nascondi/Mostra Parola
+        <b>COMANDI:</b> SPAZIO: Start/Pausa | INVIO: Indovinata | ESC: Passo | R: Reset
     </div>
 
     <div class="game-bar">
         <div class="box score-box" id="score">0</div>
-        
         <div class="box word-box" id="word">PRONTO?</div>
-        
         <div class="box timer-box" id="timer">:60</div>
     </div>
 
+    <audio id="bg-music" loop src="sottofondo.mp3"></audio>
+    <audio id="sfx-buzzer" src="buzzer.mp3"></audio>
+
     <script>
         // --- CONFIGURAZIONE ---
-        const GAME_DURATION = 60; // Secondi
+        const GAME_DURATION = 60; 
         const wordsList = [
             "CASA", "MARE", "SOLE", "GATTO", "PIZZA", "AMORE", "FIORE", 
             "LIBRO", "TRENO", "NOTTE", "CUORE", "GIOCO", "PANCA", "MELA",
             "SOGNO", "TERRA", "FUOCO", "ACQUA", "MONTE", "BIANCO"
-        ]; // Aggiungi qui le tue parole o usa un generatore
+        ]; 
 
         // --- STATO ---
         let score = 0;
         let timeLeft = GAME_DURATION;
         let timerInterval = null;
         let isRunning = false;
-        let currentWordIndex = 0;
-
-        // --- ELEMENTI DOM ---
+        
+        // --- ELEMENTI DOM & AUDIO ---
         const scoreEl = document.getElementById('score');
         const timerEl = document.getElementById('timer');
         const wordEl = document.getElementById('word');
+        const bgMusic = document.getElementById('bg-music');
+        const sfxBuzzer = document.getElementById('sfx-buzzer');
 
-        // --- LOGICA ---
-
-        function updateDisplay() {
-            scoreEl.innerText = score;
-            // Formatta il timer come :SS
-            timerEl.innerText = ":" + (timeLeft < 10 ? "0" + timeLeft : timeLeft);
-        }
-
-        function nextWord() {
-            // Sceglie una parola a caso o sequenziale
-            // Per ora sequenziale ciclico:
-            // currentWordIndex = (currentWordIndex + 1) % wordsList.length;
-            // wordEl.innerText = wordsList[currentWordIndex];
-            
-            // Oppure Random:
-            const randomWord = wordsList[Math.floor(Math.random() * wordsList.length)];
-            wordEl.innerText = randomWord;
-        }
-
-        function startTimer() {
-            if (isRunning) return;
-            isRunning = true;
-            nextWord(); // Mostra la prima parola
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateDisplay();
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    wordEl.innerText = "STOP!";
-                    isRunning = false;
-                    // Suono di fine (opzionale)
-                }
-            }, 1000);
-        }
-
-        function pauseTimer() {
-            clearInterval(timerInterval);
-            isRunning = false;
-            wordEl.innerText = "PAUSA";
-        }
-
-        function resetGame() {
-            pauseTimer();
-            score = 0;
-            timeLeft = GAME_DURATION;
-            wordEl.innerText = "PRONTO?";
-            updateDisplay();
-        }
-
-        // --- CONTROLLI TASTIERA ---
-        document.addEventListener('keydown', (e) => {
-            switch(e.code) {
-                case 'Space': // Start / Pausa
-                    if (isRunning) pauseTimer();
-                    else startTimer();
-                    break;
-                
-                case 'Enter': // Indovinata
-                    if (!isRunning && timeLeft > 0) startTimer();
-                    if (isRunning) {
-                        score++;
-                        scoreEl.style.transform = "scale(1.2)"; // Animazione pop
-                        setTimeout(() => scoreEl.style.transform = "scale(1)", 200);
-                        nextWord();
-                        updateDisplay();
-                    }
-                    break;
-
-                case 'Backspace': // Passo / Errore
-                case 'Escape':
-                    if (isRunning) {
-                        // In alcune versioni si perde un punto, qui facciamo solo "Passo"
-                        // score--; 
-                        wordEl.style.opacity = "0";
-                        setTimeout(() => {
-                            nextWord();
-                            wordEl.style.opacity = "1";
-                        }, 100);
-                        updateDisplay();
-                    }
-                    break;
-
-                case 'ArrowUp': // Correggi punteggio +
-                    score++;
-                    updateDisplay();
-                    break;
-
-                case 'ArrowDown': // Correggi punteggio -
-                    score--;
-                    updateDisplay();
-                    break;
-
-                case 'KeyR': // Reset
-                    resetGame();
-                    break;
-                
-                case 'KeyH': // Nascondi parola (utile se vuoi fare suspance)
-                    wordEl.innerText = wordEl.innerText === "???" ? wordsList[currentWordIndex] : "???";
-                    break;
-            }
-        });
-
-        // Inizializza
-        updateDisplay();
-    </script>
-</body>
-</html>
+        // Volume (opzionale:

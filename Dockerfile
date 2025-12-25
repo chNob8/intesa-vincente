@@ -1,11 +1,10 @@
-# Usa un'immagine leggera di Nginx
 FROM nginx:alpine
 
-# Copia il file index.html nella cartella predefinita di Nginx
-COPY index.html /usr/share/nginx/html/index.html
+# Rimuovi i file di default di nginx
+RUN rm -rf /usr/share/nginx/html/*
 
-# Espone la porta 80
+# Copia TUTTO quello che c'è nella cartella corrente (html + mp3) dentro il container
+COPY . /usr/share/nginx/html
+
 EXPOSE 80
-
-# Avvia Nginx
 CMD ["nginx", "-g", "daemon off;"]
