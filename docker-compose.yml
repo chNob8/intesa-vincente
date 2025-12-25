@@ -4,4 +4,4 @@ services:
     container_name: intesa-vincente
     restart: always
     ports:
-      - "8080:80"        # La porta: raggiungerai il sito su http://tuo-ip:8080
+      - "8090:80"        # La porta: raggiungerai il sito su http://tuo-ip:8080
