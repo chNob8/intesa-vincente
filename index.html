@@ -169,7 +169,13 @@
 
         // MODIFICA: Funzione sequenziale
  function nextWord() {
-            const randomWord = wordsList[Math.floor(Math.random() * wordsList.length)];
+            currentWordIndex++;
+
+            // Se arriviamo alla fine della lista, ricomincia da zero
+            if (currentWordIndex >= wordsList.length) {
+                currentWordIndex = 0;
+            }
+            const randomWord = wordsList[currentWordIndex];
             wordEl.innerText = randomWord;
         }
         function startTimer() {
