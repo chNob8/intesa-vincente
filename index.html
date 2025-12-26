@@ -168,22 +168,10 @@
         }
 
         // MODIFICA: Funzione sequenziale
-        function nextWord() {
-            if (wordsList.length === 0) return;
-            
-            // Prende la parola corrente
-            const currentWord = wordsList[currentWordIndex];
-            wordEl.innerText = currentWord;
-
-            // Incrementa l'indice per la prossima volta
-            currentWordIndex++;
-
-            // Se arriviamo alla fine della lista, ricomincia da zero
-            if (currentWordIndex >= wordsList.length) {
-                currentWordIndex = 0;
-            }
+ function nextWord() {
+            const randomWord = wordsList[Math.floor(Math.random() * wordsList.length)];
+            wordEl.innerText = randomWord;
         }
-
         function startTimer() {
             if (isRunning) return;
             // Se l'overlay è ancora visibile, non far partire il gioco
