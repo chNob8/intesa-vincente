@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +11,11 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #000; 
+            background-color: #000;
             height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-end; 
+            align-items: flex-end;
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
         }
@@ -22,8 +23,11 @@
         /* OVERLAY INIZIALE PER SBLOCCO AUDIO */
         #start-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             color: white;
             display: flex;
             flex-direction: column;
@@ -33,21 +37,29 @@
             cursor: pointer;
             text-align: center;
         }
-        #start-overlay h1 { font-size: 3rem; margin-bottom: 20px; }
-        #start-overlay p { font-size: 1.5rem; color: #ccc; }
+
+        #start-overlay h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        #start-overlay p {
+            font-size: 1.5rem;
+            color: #ccc;
+        }
 
         .game-bar {
             margin-bottom: 50px;
             display: flex;
             align-items: center;
             gap: 15px;
-            transform: scale(1.2); 
+            transform: scale(1.2);
         }
 
         .box {
             background: linear-gradient(180deg, #2ebfec 0%, #007cc2 50%, #005a9e 100%);
             border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.4);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.4);
             color: white;
             display: flex;
             justify-content: center;
@@ -63,32 +75,53 @@
             left: 2%;
             width: 96%;
             height: 45%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
             border-radius: 15px 15px 50% 50% / 15px 15px 10px 10px;
         }
 
         .score-box {
-            width: 100px; height: 80px; font-size: 3rem; font-weight: 900;
-            border-top-left-radius: 40px; border-bottom-left-radius: 40px;
+            width: 100px;
+            height: 80px;
+            font-size: 3rem;
+            font-weight: 900;
+            border-top-left-radius: 40px;
+            border-bottom-left-radius: 40px;
         }
 
         .word-box {
-            width: 600px; height: 100px; font-size: 3.5rem; font-weight: 900;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 2px;
+            width: 600px;
+            height: 100px;
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .timer-box {
-            width: 120px; height: 80px; font-size: 3rem; font-weight: 900;
-            border-top-right-radius: 40px; border-bottom-right-radius: 40px;
+            width: 120px;
+            height: 80px;
+            font-size: 3rem;
+            font-weight: 900;
+            border-top-right-radius: 40px;
+            border-bottom-right-radius: 40px;
         }
 
         .controls-hint {
-            position: absolute; top: 10px; left: 10px;
-            color: #555; font-size: 0.8rem; font-family: monospace;
-            background: rgba(255,255,255,0.9); padding: 10px; border-radius: 5px; opacity: 0.2;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #555;
+            font-size: 0.8rem;
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            opacity: 0.2;
         }
     </style>
 </head>
+
 <body>
 
     <div id="start-overlay">
@@ -110,32 +143,32 @@
     <audio id="sfx-buzzer" src="buzzer.mp3"></audio>
 
     <script>
-        const GAME_DURATION = 60; 
+        const GAME_DURATION = 60;
         const wordsList = [
-           "LAVATRICE", "BACALÀ", "MUTUO", "SPRITZ", "POZZO", "PALLADIO",
+            "LAVATRICE", "BACALÀ", "MUTUO", "SPRITZ", "POZZO", "PALLADIO",
             "CALZINO", "NEBBIA", "FERIE", "ASIAGO", "TELECOMANDO", "AUTOVELOX",
             "GRAPPA", "DIVANO", "NONNA", "GATTO", "BOLLETTA", "SCHEI",
             "PANTOFOLA", "PRETE", "AFFITTO", "BIGOLI", "CUSCINO", "TRAFFICO",
-            "SOPRESSA", "STENDINO", "APERITIVO", "OMBRA", "CIMICE","MESTOLO", "SALDI",
+            "SOPRESSA", "STENDINO", "APERITIVO", "OMBRA", "CIMICE", "MESTOLO", "SALDI",
             "BERICI", "ASPIRAPOLVERE", "DIETA", "SVEGLIA", "ZANZARA",
             "PANEVIN", "DENTIFRICIO", "KARAOKE", "SAGRA", "CHIAVI", "PALESTRA",
             "ALPINI", "RUBINETTO", "FARAONA", "STIPENDIO", "POLENTA", "FRIGORIFERO",
             "PENSIONE", "RADICCHIO", "SPECCHIO", "PARCHEGGIO", "BASSANO", "PETTINE",
-            "CODA", "MAROSTICA", "ASCIUGAMANO", "SPIAGGIA",  "PENTOLA",
-            "MONTAGNA",  "FORCHETTA", "SCI", "OSTERIA", "COLTELLO",
+            "CODA", "MAROSTICA", "ASCIUGAMANO", "SPIAGGIA", "PENTOLA",
+            "MONTAGNA", "FORCHETTA", "SCI", "OSTERIA", "COLTELLO",
             "PIZZA", "TRATTORE", "BICCHIERE", "GELATO", "CAMPO", "TOVAGLIOLO",
             "CAFFÈ", "CAMPANILE", "CACCIAVITE", "MATRIMONIO", "BESTEMMIA", "MARTELLO",
             "TIRAMISU", "LAMPADINA", "IDRAULICO", "PANDORO", "PRESA",
-            "BARBIERE", "PROSECCO", "CARICABATTERIE", "DOTTORE",  "MATERASSO",
+            "BARBIERE", "PROSECCO", "CARICABATTERIE", "DOTTORE", "MATERASSO",
             "FARMACIA", "CAPANNONE", "BANCOMAT", "ROTONDA", "MOKA",
             "SCOPA"
-        ]; 
+        ];
 
         let score = 0;
         let timeLeft = GAME_DURATION;
         let timerInterval = null;
         let isRunning = false;
-        
+
         const scoreEl = document.getElementById('score');
         const timerEl = document.getElementById('timer');
         const wordEl = document.getElementById('word');
@@ -143,7 +176,7 @@
         const sfxBuzzer = document.getElementById('sfx-buzzer');
         const overlay = document.getElementById('start-overlay');
 
-        bgMusic.volume = 0.5; 
+        bgMusic.volume = 0.5;
 
         // --- GESTIONE START INIZIALE ---
         overlay.addEventListener('click', () => {
@@ -152,7 +185,7 @@
                 bgMusic.pause();
                 bgMusic.currentTime = 0;
             }).catch(e => console.error("Errore audio:", e));
-            
+
             sfxBuzzer.play().then(() => {
                 sfxBuzzer.pause();
                 sfxBuzzer.currentTime = 0;
@@ -167,8 +200,15 @@
         }
 
         function nextWord() {
-            const randomWord = wordsList[Math.floor(Math.random() * wordsList.length)];
-            wordEl.innerText = randomWord;
+            // Se siamo arrivati in fondo alla lista, ricomincia dalla prima
+            if (currentWordIndex >= sourceWords.length) {
+                currentWordIndex = 0;
+            }
+
+            // Prendi la parola corrente e avanza l'indice di 1
+            currentWordText = sourceWords[currentWordIndex];
+            wordEl.innerText = currentWordText;
+            currentWordIndex++;
         }
 
         function startTimer() {
@@ -211,6 +251,9 @@
             score = 0;
             timeLeft = GAME_DURATION;
             wordEl.innerText = "PRONTO?";
+            // Resetta l'ordine all'inizio
+            currentWordIndex = 0;
+            currentWordText = "";
             bgMusic.pause();
             bgMusic.currentTime = 0;
             updateDisplay();
@@ -219,10 +262,10 @@
         document.addEventListener('keydown', (e) => {
             if (overlay.style.display !== 'none') return; // Blocca tasti se c'è overlay
 
-            switch(e.code) {
-                case 'Space': 
+            switch (e.code) {
+                case 'Space':
                     if (isRunning) pauseTimer(); else startTimer(); break;
-                case 'Enter': 
+                case 'Enter':
                     if (!isRunning && timeLeft > 0) startTimer();
                     if (isRunning) {
                         score++;
@@ -249,4 +292,5 @@
         updateDisplay();
     </script>
 </body>
+
 </html>
